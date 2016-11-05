@@ -19,13 +19,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SolveActivity extends Activity{
 
     private TeacherInfo info;
     private BluetoothAdapter bluetoothAdapter;
-    private CreatRandn cRand = new CreatRandn();
+    private TextView timer_text;
+    private Button start;
+    CreatRandn cRand = new CreatRandn();
     private String cName;
+    private int recLen = 300;
+    Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,23 +39,14 @@ public class SolveActivity extends Activity{
         setContentView(R.layout.activity_solve);
 
         //final TextView text = (TextView) findViewById(R.id.textView);
+        timer_text = (TextView) findViewById(R.id.timer);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if(bluetoothAdapter == null){
-            Toast.makeText(getApplicationContext(), "Local Bluetooth Can't Used", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
-        if(!bluetoothAdapter.isEnabled()){
-            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(turnOn, 0);
-            Toast.makeText(getApplicationContext(),"Bluetooth Turned On",Toast.LENGTH_LONG).show();
-        }
+        this.BlueToothOn();
 
         Intent intent = getIntent();
         cName = intent.getStringExtra("cName");
 
-        final Button start = (Button) findViewById(R.id.btn_start);
+        start = (Button) findViewById(R.id.btn_start);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +62,8 @@ public class SolveActivity extends Activity{
                 text.append("RandNumber :" + info.getRandNum() + "\n\n");*/
 
                 new Thread(thread).start();
+
+                timer.schedule(task, 1000, 1000);
 
                 start.setVisibility(View.INVISIBLE);
             }
@@ -105,4 +104,34 @@ public class SolveActivity extends Activity{
             }
         }
     };
+
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recLen--;
+                    timer_text.setText("" + recLen);
+                    if(recLen < 0){
+                        timer.cancel();
+                        timer_text.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+    };
+
+    private void BlueToothOn(){
+        if(bluetoothAdapter == null){
+            Toast.makeText(getApplicationContext(), "Local Bluetooth Can't Used", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        if(!bluetoothAdapter.isEnabled()){
+            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnOn, 0);
+            Toast.makeText(getApplicationContext(),"Bluetooth Turned On",Toast.LENGTH_LONG).show();
+        }
+    }
 }
