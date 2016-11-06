@@ -1,4 +1,4 @@
-package com.example.misaya.imool.DTO;
+package com.example.misaya.imool.DAO;
 
 import java.io.Serializable;
 

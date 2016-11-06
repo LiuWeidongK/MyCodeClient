@@ -7,18 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
 import com.example.misaya.imool.R;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class MainActivity extends AppCompatActivity {
-
-    private int reclen = 11;
-    private TextView textView;
-    Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +18,11 @@ public class MainActivity extends AppCompatActivity {
 
         Button teacher = (Button) findViewById(R.id.btn_teacher);
         Button student = (Button) findViewById(R.id.btn_student);
-        textView = (TextView) findViewById(R.id.timer);
-
 
         teacher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,TeacherActivity.class);
+                Intent intent = new Intent(MainActivity.this, TeacherActivity.class);
                 startActivity(intent);
             }
         });
@@ -41,27 +30,12 @@ public class MainActivity extends AppCompatActivity {
         student.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timer.schedule(task, 1000, 1000);
+                Intent intent = new Intent(MainActivity.this,StudentActivity.class);
+                startActivity(intent);
             }
         });
     }
 
-    TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    reclen--;
-                    textView.setText("" + reclen);
-                    if(reclen < 0){
-                        timer.cancel();
-                        textView.setVisibility(View.GONE);
-                    }
-                }
-            });
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

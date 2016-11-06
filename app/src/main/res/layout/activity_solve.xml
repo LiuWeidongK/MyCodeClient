@@ -20,4 +20,21 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="68dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STOP"
+        android:visibility="invisible"
+        android:id="@+id/btn_stop"
+        android:layout_alignTop="@+id/btn_start"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tv_randnum"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
