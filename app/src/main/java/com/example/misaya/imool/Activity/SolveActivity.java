@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.misaya.imool.DAO.TeacherInfo;
 import com.example.misaya.imool.R;
 import com.example.misaya.imool.Tool.CreatRandn;
+import com.example.misaya.imool.Tool.HttpUtil;
 import com.example.misaya.imool.Tool.JsonUtil;
 
 import java.io.OutputStream;
@@ -57,7 +58,11 @@ public class SolveActivity extends Activity{
 
                 rand_text.setText(tinfo.getRandNum());
 
-                new Thread(thread).start();
+                HttpUtil httpUtil = new HttpUtil("teacherServ",JsonUtil.ObjectToJson(tinfo));
+                httpUtil.run();
+
+                //Toast.makeText(getApplication(),JsonUtil.ObjectToJson(tinfo),Toast.LENGTH_LONG).show();
+                //httpUtil.run();
 
                 timer.schedule(task, 0, 1000);
 
@@ -75,40 +80,6 @@ public class SolveActivity extends Activity{
             }
         });
     }
-
-    private Thread thread = new Thread(){
-        @Override
-        public void run() {
-            HttpURLConnection connection = null;
-            try{
-                URL url = new URL("http://192.168.23.3:8080/teacherServ");
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setConnectTimeout(5000);
-                connection.setRequestProperty("Charset", "UTF-8");
-
-                OutputStream outputStream = connection.getOutputStream();
-
-                String content = "json=" + JsonUtil.ObjectToJson(tinfo);
-                outputStream.write(content.getBytes());
-
-                /*BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuffer stringBuffer = new StringBuffer();
-                String str;
-
-                while((str = reader.readLine()) != null){
-                    stringBuffer.append(str);
-                }
-
-                System.out.println(stringBuffer.toString());*/
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
-                if(connection!=null)
-                    connection.disconnect();
-            }
-        }
-    };
 
     TimerTask task = new TimerTask() {
         @Override

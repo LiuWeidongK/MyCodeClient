@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.misaya.imool.DAO.StudentInfo_Macs;
 import com.example.misaya.imool.R;
+import com.example.misaya.imool.Tool.HttpUtil;
 import com.example.misaya.imool.Tool.JsonUtil;
 
 import java.io.OutputStream;
@@ -28,9 +29,11 @@ import java.util.ArrayList;
 public class StudentActivity extends Activity{
 
     private EditText randnum,id;
-    StudentInfo_Macs sinfo_macs;
     private TextView arround;
+    private Button submit;
     private BluetoothAdapter bluetoothAdapter;
+    private static Boolean SIGN = false;
+    StudentInfo_Macs sinfo_macs;
     ArrayList<String> mac_list = new ArrayList<>();
 
     @Override
@@ -41,7 +44,7 @@ public class StudentActivity extends Activity{
         randnum = (EditText) findViewById(R.id.ed_stu_rand);
         id = (EditText) findViewById(R.id.ed_stu_id);
         arround = (TextView) findViewById(R.id.arround);
-        final Button submit = (Button) findViewById(R.id.btn_stu_sub);
+        submit = (Button) findViewById(R.id.btn_stu_sub);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         this.BlueToothOn();
@@ -50,10 +53,15 @@ public class StudentActivity extends Activity{
         registerReceiver(mReceiver,mFilter);
         mFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver,mFilter);
-        randnum.setOnClickListener(new View.OnClickListener() {         //每次点击都会执行、
+
+        randnum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetoothAdapter.startDiscovery();
+                if(!SIGN){
+                    bluetoothAdapter.startDiscovery();
+                    Toast.makeText(getApplicationContext(),"Check me!",Toast.LENGTH_SHORT).show();
+                }
+                SIGN = true;
             }
         });
 
@@ -63,49 +71,18 @@ public class StudentActivity extends Activity{
                 //setProgressBarIndeterminateVisibility(true);
                 //setTitle("Searching...");
                 //submit.setVisibility(View.GONE);
-
-                if(!bluetoothAdapter.isDiscovering()){
-                    sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),mac_list);
+                if(bluetoothAdapter.isDiscovering()){
+                    Toast.makeText(getApplicationContext(),"Submiting.Please wait!",Toast.LENGTH_SHORT);
+                }else {
+                    sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),id.getText().toString() , mac_list);
                     Toast.makeText(getApplicationContext(),mac_list.toString(),Toast.LENGTH_LONG).show();
+
+                    HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
                     //new Thread(thread).start();
                 }
             }
         });
     }
-
-    private Thread thread = new Thread(){
-        @Override
-        public void run() {
-            HttpURLConnection connection = null;
-            try{
-                URL url = new URL("http://192.168.23.3:8080/");          //@_@这里需要修改servlet
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setConnectTimeout(5000);
-                connection.setRequestProperty("Charset", "UTF-8");
-
-                OutputStream outputStream = connection.getOutputStream();
-
-                String content = "json=" + JsonUtil.ObjectToJson(sinfo_macs);
-                outputStream.write(content.getBytes());
-
-                /*BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuffer stringBuffer = new StringBuffer();
-                String str;
-
-                while((str = reader.readLine()) != null){
-                    stringBuffer.append(str);
-                }
-
-                System.out.println(stringBuffer.toString());*/
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
-                if(connection!=null)
-                    connection.disconnect();
-            }
-        }
-    };
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override

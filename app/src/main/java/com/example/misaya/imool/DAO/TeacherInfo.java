@@ -1,8 +1,6 @@
 package com.example.misaya.imool.DAO;
 
-import java.io.Serializable;
-
-public class TeacherInfo implements Serializable{
+public class TeacherInfo{
     private String randNum;
     private String cName;
     private String MAC;
