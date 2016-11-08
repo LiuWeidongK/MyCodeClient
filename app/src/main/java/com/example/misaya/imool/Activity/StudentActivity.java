@@ -59,26 +59,40 @@ public class StudentActivity extends Activity{
             public void onClick(View v) {
                 if(!SIGN){
                     bluetoothAdapter.startDiscovery();
-                    Toast.makeText(getApplicationContext(),"Check me!",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),"Check me!",Toast.LENGTH_SHORT).show();
+                    submit.setEnabled(false);
                 }
                 SIGN = true;
             }
         });
 
+        while(true){
+            if(!bluetoothAdapter.isDiscovering()){
+                submit.setEnabled(true);
+                break;
+            } else {
+                continue;
+            }
+        }
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //setProgressBarIndeterminateVisibility(true);
-                //setTitle("Searching...");
-                //submit.setVisibility(View.GONE);
+
                 if(bluetoothAdapter.isDiscovering()){
-                    Toast.makeText(getApplicationContext(),"Submiting.Please wait!",Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"Searching.Please Wait!",Toast.LENGTH_SHORT);
                 }else {
                     sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),id.getText().toString() , mac_list);
                     Toast.makeText(getApplicationContext(),mac_list.toString(),Toast.LENGTH_LONG).show();
 
                     HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
                     new Thread(httpUtil).start();
+                    /*if(httpUtil.getResponse().equals("true")){
+                        Toast.makeText(getApplicationContext(),"Sucess",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(),"Fail",Toast.LENGTH_LONG).show();
+                    }*/
+                    //Toast.makeText(getApplicationContext(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
                 }
             }
         });
