@@ -1,5 +1,7 @@
 package com.example.misaya.imool.Tool;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -7,6 +9,7 @@ import java.net.URL;
 public class HttpUtil extends Thread{
     private String servletName;
     private String jsonStr;
+    private String response;
 
     public HttpUtil(String servletName, String jsonStr) {
         this.servletName = servletName;
@@ -27,20 +30,23 @@ public class HttpUtil extends Thread{
             String content = "json=" + jsonStr;
             outputStream.write(content.getBytes());
 
-            /*BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer stringBuffer = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String str;
 
             while((str = reader.readLine()) != null){
-                stringBuffer.append(str);
+                response += str;
             }
 
-            System.out.println(stringBuffer.toString());*/
+            //System.out.println(response);
         }catch (Exception e){
             e.printStackTrace();
         }finally {
             if(connection!=null)
                 connection.disconnect();
         }
+    }
+
+    public String getResponse() {
+        return response;
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.example.misaya.imool.Tool.CreatRandn;
 import com.example.misaya.imool.Tool.HttpUtil;
 import com.example.misaya.imool.Tool.JsonUtil;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -59,10 +62,7 @@ public class SolveActivity extends Activity{
                 rand_text.setText(tinfo.getRandNum());
 
                 HttpUtil httpUtil = new HttpUtil("teacherServ",JsonUtil.ObjectToJson(tinfo));
-                httpUtil.run();
-
-                //Toast.makeText(getApplication(),JsonUtil.ObjectToJson(tinfo),Toast.LENGTH_LONG).show();
-                //httpUtil.run();
+                new Thread(httpUtil).start();
 
                 timer.schedule(task, 0, 1000);
 

@@ -78,7 +78,7 @@ public class StudentActivity extends Activity{
                     Toast.makeText(getApplicationContext(),mac_list.toString(),Toast.LENGTH_LONG).show();
 
                     HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
-                    //new Thread(thread).start();
+                    new Thread(httpUtil).start();
                 }
             }
         });
