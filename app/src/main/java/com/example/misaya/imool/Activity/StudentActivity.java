@@ -1,6 +1,7 @@
 package com.example.misaya.imool.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -32,7 +33,7 @@ public class StudentActivity extends Activity{
     private TextView arround;
     private Button submit;
     private BluetoothAdapter bluetoothAdapter;
-    private static Boolean SIGN = false;
+    private ProgressDialog dialog;
     StudentInfo_Macs sinfo_macs;
     ArrayList<String> mac_list = new ArrayList<>();
 
@@ -47,58 +48,54 @@ public class StudentActivity extends Activity{
         submit = (Button) findViewById(R.id.btn_stu_sub);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        this.BlueToothOn();
+        this.BlueToothOn();                                         //open
 
         IntentFilter mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver,mFilter);
         mFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver,mFilter);
 
-        randnum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!SIGN){
-                    bluetoothAdapter.startDiscovery();
-                    //Toast.makeText(getApplicationContext(),"Check me!",Toast.LENGTH_SHORT).show();
-                    submit.setEnabled(false);
-                }
-                SIGN = true;
-            }
-        });
-
-        while(true){
-            if(!bluetoothAdapter.isDiscovering()){
-                submit.setEnabled(true);
-                break;
-            } else {
-                continue;
-            }
-        }
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),id.getText().toString() , mac_list);
+                Toast.makeText(getApplicationContext(),mac_list.toString(),Toast.LENGTH_LONG).show();
 
-                if(bluetoothAdapter.isDiscovering()){
-                    Toast.makeText(getApplicationContext(),"Searching.Please Wait!",Toast.LENGTH_SHORT);
-                }else {
-                    sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),id.getText().toString() , mac_list);
-                    Toast.makeText(getApplicationContext(),mac_list.toString(),Toast.LENGTH_LONG).show();
-
-                    HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
-                    new Thread(httpUtil).start();
-                    /*if(httpUtil.getResponse().equals("true")){
-                        Toast.makeText(getApplicationContext(),"Sucess",Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(),"Fail",Toast.LENGTH_LONG).show();
-                    }*/
-                    //Toast.makeText(getApplicationContext(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
-                }
+                HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
+                new Thread(httpUtil).start();
+                /*if(httpUtil.getResponse().equals("true")){
+                    Toast.makeText(getApplicationContext(),"Sucess",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"Fail",Toast.LENGTH_LONG).show();
+                }*/
+                Toast.makeText(getApplicationContext(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){          //获取返回值
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 0){
+            if(resultCode == RESULT_OK) {                           //Allow To Open the Bluetooth
+                Toast.makeText(getApplicationContext(),"You Have Allowed This Operation.",Toast.LENGTH_LONG).show();
+
+                dialog = ProgressDialog.show(StudentActivity.this, "Title", "Searching...Please wait.");
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bluetoothAdapter.startDiscovery();
+                    }
+                }).start();
+            } else if(resultCode == RESULT_CANCELED){
+                Toast.makeText(getApplicationContext(),"You Have Banned This Operation.",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {                     //广播类
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -108,8 +105,7 @@ public class StudentActivity extends Activity{
                 arround.append(device.getAddress());
                 mac_list.add(device.getAddress());
             }else if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
-                setProgressBarIndeterminateVisibility(false);
-                setTitle("Search");
+                dialog.dismiss();                                                        //结束等待
             }
         }
     };
@@ -119,12 +115,8 @@ public class StudentActivity extends Activity{
             Toast.makeText(getApplicationContext(), "Local Bluetooth Can't Used", Toast.LENGTH_LONG).show();
             finish();
         }
-
-        if(!bluetoothAdapter.isEnabled()){
-            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(turnOn, 0);
-            Toast.makeText(getApplicationContext(),"Bluetooth Turned On",Toast.LENGTH_LONG).show();
-        }
+        Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(turnOn, 0);
     }
 
     private void BlueToothOff(){
