@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,13 +28,14 @@ import java.util.TimerTask;
 public class SolveActivity extends Activity{
 
     TeacherInfo tinfo;
+    CreatRandn cRand = new CreatRandn();
+    Timer timer = new Timer();
+    Handler handler;
     private BluetoothAdapter bluetoothAdapter;
     private TextView timer_text,rand_text;
     private Button start,stop;
-    CreatRandn cRand = new CreatRandn();
     private String cName;
     private int recLen = 20;
-    Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class SolveActivity extends Activity{
 
                 rand_text.setText(tinfo.getRandNum());
 
-                HttpUtil httpUtil = new HttpUtil("teacherServ",JsonUtil.ObjectToJson(tinfo));
+                HttpUtil httpUtil = new HttpUtil("teacherServ",JsonUtil.ObjectToJson(tinfo),handler);
                 new Thread(httpUtil).start();
 
                 timer.schedule(task, 0, 1000);
