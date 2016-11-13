@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +37,8 @@ public class StudentActivity extends Activity{
     private Button submit;
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog dialog;
+    private ProgressDialog dialog2;
+    Handler handler;
     StudentInfo_Macs sinfo_macs;
     ArrayList<String> mac_list = new ArrayList<>();
 
@@ -48,26 +53,41 @@ public class StudentActivity extends Activity{
         submit = (Button) findViewById(R.id.btn_stu_sub);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        this.BlueToothOn();                                         //open
+        this.BlueToothOn();                                                  //1.open
 
         IntentFilter mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver,mFilter);
         mFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(mReceiver,mFilter);
+        registerReceiver(mReceiver, mFilter);
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                if(msg.what == 0x456)
+                    dialog2 = ProgressDialog.show(StudentActivity.this, "Title", "Searching...Please wait.");
+            }
+        };
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),id.getText().toString() , mac_list);
-                Toast.makeText(getApplicationContext(),mac_list.toString(),Toast.LENGTH_LONG).show();
 
-                HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
+                HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs),handler);
+
                 new Thread(httpUtil).start();
+                try {
+                    httpUtil.join();
+                    //dialog2.dismiss();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 /*if(httpUtil.getResponse().equals("true")){
                     Toast.makeText(getApplicationContext(),"Sucess",Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(),"Fail",Toast.LENGTH_LONG).show();
                 }*/
+                //Log.i("response3",httpUtil.getResponse());
                 Toast.makeText(getApplicationContext(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
             }
         });
@@ -77,16 +97,16 @@ public class StudentActivity extends Activity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data){          //获取返回值
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 0){
-            if(resultCode == RESULT_OK) {                           //Allow To Open the Bluetooth
+        if(requestCode == 0x123){                                    //3.get code
+            if(resultCode == RESULT_OK) {
                 Toast.makeText(getApplicationContext(),"You Have Allowed This Operation.",Toast.LENGTH_LONG).show();
 
-                dialog = ProgressDialog.show(StudentActivity.this, "Title", "Searching...Please wait.");
+                dialog = ProgressDialog.show(StudentActivity.this, "Title", "Searching...Please wait.");    //4.show dialog
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        bluetoothAdapter.startDiscovery();
+                        bluetoothAdapter.startDiscovery();          //5.start search
                     }
                 }).start();
             } else if(resultCode == RESULT_CANCELED){
@@ -100,12 +120,12 @@ public class StudentActivity extends Activity{
         public void onReceive(Context context, Intent intent) {
 
             String action = intent.getAction();
-            if(action.equals(BluetoothDevice.ACTION_FOUND)){
+            if(action.equals(BluetoothDevice.ACTION_FOUND)){                //6.searching
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 arround.append(device.getAddress());
-                mac_list.add(device.getAddress());
+                mac_list.add(device.getAddress());      //delete
             }else if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
-                dialog.dismiss();                                                        //结束等待
+                dialog.dismiss();                                           //7.search finished
             }
         }
     };
@@ -116,7 +136,7 @@ public class StudentActivity extends Activity{
             finish();
         }
         Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(turnOn, 0);
+        startActivityForResult(turnOn, 0x123);                                        //2.send intent
     }
 
     private void BlueToothOff(){
@@ -124,6 +144,5 @@ public class StudentActivity extends Activity{
             bluetoothAdapter.disable();
             Toast.makeText(getApplicationContext(),"Bluetooth Turned Off",Toast.LENGTH_LONG).show();
         }
-
     }
 }
