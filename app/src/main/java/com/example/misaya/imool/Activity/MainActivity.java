@@ -1,41 +1,46 @@
 package com.example.misaya.imool.Activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import com.example.misaya.imool.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
-        Button teacher = (Button) findViewById(R.id.btn_teacher);
-        Button student = (Button) findViewById(R.id.btn_student);
+        this.isGuide();
 
-        teacher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, TeacherActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        student.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,StudentActivity.class);
-                startActivity(intent);
-            }
-        });
+        SharedPreferences preferences = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
+        String type = preferences.getString("TYPE","");
+        if(type.equals("STUDENT")){
+            Intent intent = new Intent(MainActivity.this,StudentActivity.class);
+            startActivity(intent);
+        } else if(type.equals("TEACHER")){
+            Intent intent = new Intent(MainActivity.this, TeacherActivity.class);
+            startActivity(intent);
+        }
     }
 
+    private void isGuide(){
+        SharedPreferences preferences = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
+        int count = preferences.getInt("count", 0);
+        if(count == 0){
+            Intent intent = new Intent(MainActivity.this, GuideActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("count",++count);
+        editor.apply();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

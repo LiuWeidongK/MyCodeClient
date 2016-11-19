@@ -1,27 +1,26 @@
 package com.example.misaya.imool.Activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.misaya.imool.DAO.ResultInfo;
 import com.example.misaya.imool.DAO.TeacherInfo;
 import com.example.misaya.imool.R;
 import com.example.misaya.imool.Tool.CreatRandn;
 import com.example.misaya.imool.Tool.HttpUtil;
 import com.example.misaya.imool.Tool.JsonUtil;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,11 +29,10 @@ public class SolveActivity extends Activity{
     TeacherInfo tinfo;
     CreatRandn cRand = new CreatRandn();
     Timer timer = new Timer();
-    Handler handler;
     private BluetoothAdapter bluetoothAdapter;
-    private TextView timer_text,rand_text;
+    private TextView timer_text,rand_text,res_text;
     private Button start,stop;
-    private String cName;
+    private String cName,section_1,section_2;
     private int recLen = 20;
 
     @Override
@@ -47,8 +45,10 @@ public class SolveActivity extends Activity{
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.BlueToothOn();         //open bluetooth
 
-        Intent intent = getIntent();
-        cName = intent.getStringExtra("cName");     //get extra
+        ArrayList<String> infolist = getIntent().getStringArrayListExtra("infolist");
+        cName = infolist.get(0);
+        section_1 = infolist.get(1);
+        section_2 = infolist.get(2);
 
         start = (Button) findViewById(R.id.btn_start);      //init
         stop = (Button) findViewById(R.id.btn_stop);
@@ -57,14 +57,14 @@ public class SolveActivity extends Activity{
             @Override
             public void onClick(View v) {
                 String MAC = bluetoothAdapter.getAddress();
-                tinfo = new TeacherInfo(cRand.created(), cName, MAC);
+                tinfo = new TeacherInfo(cRand.created(), cName, MAC, section_1, section_2);
 
                 bluetoothAdapter.setName(cName);
 
                 rand_text.setText(tinfo.getRandNum());
 
-                HttpUtil httpUtil = new HttpUtil("teacherServ",JsonUtil.ObjectToJson(tinfo),handler);
-                new Thread(httpUtil).start();
+                HttpUtil httpUtil = new HttpUtil("teacherServ", JsonUtil.ObjectToJson(tinfo));
+                httpUtil.start();
 
                 timer.schedule(task, 0, 1000);
 
@@ -75,10 +75,8 @@ public class SolveActivity extends Activity{
 
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                TimeOut();
-
-                //转到统计页面$
+            public void onClick(View v) {                   //点击停止之后 询问确定是否要停止
+                stopAlert();
             }
         });
     }
@@ -91,21 +89,71 @@ public class SolveActivity extends Activity{
                 public void run() {
                     timer_text.setText(recLen/60 + ":" + recLen%60);
                     recLen--;
-                    if(recLen < 0){
-                        TimeOut();
+                    if(recLen < 0){                        //时间结束之后 询问是否要查看结果
+                        timeoutAlert();
                     }
                 }
             });
         }
     };
 
-    private void TimeOut(){
+    private void timeoutAlert(){
+        TimeOut();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Time up!Whether you want to display results?");
+        builder.setTitle("Prompt");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getResult();
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
 
+    private void stopAlert(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Aer you sure to stop?");
+        builder.setTitle("Prompt");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                TimeOut();
+                getResult();
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void getResult(){
+        HttpUtil httpUtil_c = new HttpUtil("ResultServ",tinfo.getRandNum());
+        httpUtil_c.start();
+
+        String result = httpUtil_c.getResponse();       //返回一个Json串 其中包含多组数据
+        ResultInfo resultInfo = JsonUtil.JsonToObject(result,ResultInfo.class);         //@保存Json在本地
+
+        res_text = (TextView) findViewById(R.id.tv_result);
+        res_text.append("ID" + "\t" + "NAME" + "\n");
+        if(resultInfo != null){
+            ArrayList<String> list_ids = resultInfo.getIds();
+            ArrayList<String> list_names = resultInfo.getNames();
+            int length  = list_ids.size();
+            for(int i=0;i<length;i++){
+                res_text.append(list_ids.get(i) + "\t" + list_names.get(i) + "\n");
+            }
+        }
+    }
+
+    private void TimeOut(){
         timer.cancel();
         timer_text.setVisibility(View.GONE);
+        stop.setVisibility(View.GONE);
+        rand_text.setVisibility(View.GONE);
         BlueToothOff();
-
     }
+
     private void BlueToothOn(){
         if(bluetoothAdapter == null){
             Toast.makeText(getApplicationContext(), "Local Bluetooth Can't Used", Toast.LENGTH_LONG).show();

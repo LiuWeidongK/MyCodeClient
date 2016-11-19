@@ -1,7 +1,10 @@
 package com.example.misaya.imool.Tool;
 
+import android.app.ProgressDialog;
 import android.os.Handler;
 import android.os.Message;
+
+import com.example.misaya.imool.Activity.StudentActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,21 +17,15 @@ public class HttpUtil extends Thread{
     private String servletName;
     private String jsonStr;
     private String response;
-    private Handler handler;
 
-    public HttpUtil(String servletName, String jsonStr, Handler handler) {
+    public HttpUtil(String servletName, String jsonStr) {
         this.servletName = servletName;
         this.jsonStr = jsonStr;
-        this.handler = handler;
     }
 
     public void run() {
         HttpURLConnection connection = null;
         try{
-            Message msg = new Message();
-            msg.what = 0x456;
-            handler.sendMessage(msg);
-
             URL url = new URL("http://192.168.23.3:8080/" + servletName);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");

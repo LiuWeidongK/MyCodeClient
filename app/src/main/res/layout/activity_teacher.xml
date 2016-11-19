@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Course"
-        android:id="@+id/tv_course"
+        android:id="@+id/textView1"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp" />
@@ -19,16 +19,103 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ed_course"
-        android:layout_alignBottom="@+id/tv_course"
+        android:hint="It will become your bluetooth name"
+        android:layout_alignBottom="@+id/textView1"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/tv_course" />
+        android:layout_toEndOf="@+id/textView1" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"
         android:id="@+id/btn_submit"
-        android:layout_below="@+id/ed_course"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="61dp" />
+        android:layout_marginTop="61dp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Id Section"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textView1"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="32dp" />
+
+    <EditText
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/et_section1"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/et_section2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toEndOf="@+id/textView3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="—"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/et_section1"
+        android:layout_toEndOf="@+id/et_section1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="首页"
+            android:id="@+id/btn_tea_home"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="发现"
+            android:id="@+id/btn_tea_discover"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/btn_tea_home" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="我的"
+            android:id="@+id/btn_tea_mine"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="课程"
+            android:id="@+id/btn_tea_class"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/btn_tea_mine" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_tea_middle"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/midlle" />
+    </RelativeLayout>
 </RelativeLayout>

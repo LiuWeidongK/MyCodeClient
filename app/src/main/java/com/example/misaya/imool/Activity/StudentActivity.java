@@ -1,13 +1,16 @@
 package com.example.misaya.imool.Activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +41,6 @@ public class StudentActivity extends Activity{
     private Button submit;
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog dialog;
-    private ProgressDialog dialog2;
-    Handler handler;
     StudentInfo_Macs sinfo_macs;
     ArrayList<String> mac_list = new ArrayList<>();
 
@@ -53,6 +55,7 @@ public class StudentActivity extends Activity{
         submit = (Button) findViewById(R.id.btn_stu_sub);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        this.bottomMuem();
         this.BlueToothOn();                                                  //1.open
 
         IntentFilter mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -60,35 +63,31 @@ public class StudentActivity extends Activity{
         mFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver, mFilter);
 
-        handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                if(msg.what == 0x456)
-                    dialog2 = ProgressDialog.show(StudentActivity.this, "Title", "Searching...Please wait.");
-            }
-        };
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sinfo_macs = new StudentInfo_Macs(randnum.getText().toString(),id.getText().toString() , mac_list);
+                HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs));
+                httpUtil.start();
 
-                HttpUtil httpUtil = new HttpUtil("studentServ",JsonUtil.ObjectToJson(sinfo_macs),handler);
-
-                new Thread(httpUtil).start();
                 try {
                     httpUtil.join();
-                    //dialog2.dismiss();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                /*if(httpUtil.getResponse().equals("true")){
-                    Toast.makeText(getApplicationContext(),"Sucess",Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getApplicationContext(),"Fail",Toast.LENGTH_LONG).show();
-                }*/
-                //Log.i("response3",httpUtil.getResponse());
-                Toast.makeText(getApplicationContext(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
+
+                Log.i("@@httpGetResponse@@",httpUtil.getResponse());
+
+                if(httpUtil.getResponse().equals("TRUE")){
+                    Toast.makeText(getApplication(),"Successful!",Toast.LENGTH_LONG).show();
+                    BlueToothOff();
+                } else if (httpUtil.getResponse().equals("FALSE")){
+                    showAlert("Fail!");                    //匹配失败 询问是否重新
+                } else if(httpUtil.getResponse().equals("TIME_OUT")){
+                    showAlert("Network connections error!");
+                } else if(httpUtil.getResponse().equals("SERVER_ERROR")){
+                    showAlert("Server error!");
+                }
             }
         });
     }
@@ -106,7 +105,7 @@ public class StudentActivity extends Activity{
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        bluetoothAdapter.startDiscovery();          //5.start search
+                        bluetoothAdapter.startDiscovery();          //5.start search 12s
                     }
                 }).start();
             } else if(resultCode == RESULT_CANCELED){
@@ -123,12 +122,26 @@ public class StudentActivity extends Activity{
             if(action.equals(BluetoothDevice.ACTION_FOUND)){                //6.searching
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 arround.append(device.getAddress());
-                mac_list.add(device.getAddress());      //delete
+                mac_list.add(device.getAddress());                //delete
             }else if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
                 dialog.dismiss();                                           //7.search finished
             }
         }
     };
+
+    private void showAlert(String msg){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(msg + "Do you want to do it again?");
+        builder.setTitle("Prompt");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                BlueToothOn();
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
 
     private void BlueToothOn(){
         if(bluetoothAdapter == null){
@@ -144,5 +157,60 @@ public class StudentActivity extends Activity{
             bluetoothAdapter.disable();
             Toast.makeText(getApplicationContext(),"Bluetooth Turned Off",Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void bottomMuem(){
+        Button home = (Button) findViewById(R.id.btn_stu_home);
+        Button discovery = (Button) findViewById(R.id.btn_stu_discover);
+        ImageView middle = (ImageView) findViewById(R.id.iv_stu_middle);
+        Button _class = (Button) findViewById(R.id.btn_stu_class);
+        Button mine = (Button) findViewById(R.id.btn_stu_mine);
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentActivity.this, StudentActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        discovery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentActivity.this, DiscoveryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        middle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preferences_1 = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
+                SharedPreferences preferences_2 = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor_1 = preferences_1.edit();
+                editor_1.clear();
+                editor_1.commit();
+                SharedPreferences.Editor editor_2 = preferences_2.edit();
+                editor_2.clear();
+                editor_2.commit();
+                Toast.makeText(getApplication(),"SharedPreferences has cleaned!",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        _class.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentActivity.this, ClassActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentActivity.this, MineActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
