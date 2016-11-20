@@ -1,11 +1,5 @@
 package com.example.misaya.imool.Tool;
 
-import android.app.ProgressDialog;
-import android.os.Handler;
-import android.os.Message;
-
-import com.example.misaya.imool.Activity.StudentActivity;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

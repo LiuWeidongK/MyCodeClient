@@ -20,15 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.TeacherActivity" ></activity>
-        <activity android:name=".Activity.SolveActivity"></activity>
-        <activity android:name=".Activity.StudentActivity"></activity>
+        <activity android:name=".Activity.StudentSolveActivity"></activity>
+        <activity android:name=".Activity.TeacherSolveActivity"></activity>
         <activity android:name=".Activity.RegistStuActivity"></activity>
         <activity android:name=".Activity.RegistTeaActivity"></activity>
         <activity android:name=".Activity.GuideActivity"></activity>
-        <activity android:name=".Activity.ClassActivity"></activity>
-        <activity android:name=".Activity.MineActivity"></activity>
-        <activity android:name=".Activity.DiscoveryActivity"></activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>
