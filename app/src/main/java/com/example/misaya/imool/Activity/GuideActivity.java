@@ -25,7 +25,7 @@ public class GuideActivity extends Activity {
                 SharedPreferences preferences = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("TYPE","STUDENT");
-                editor.commit();
+                editor.apply();
                 Intent intent = new Intent(GuideActivity.this, RegistStuActivity.class);
                 startActivity(intent);
             }
@@ -37,7 +37,7 @@ public class GuideActivity extends Activity {
                 SharedPreferences preferences = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("TYPE","TEACHER");
-                editor.commit();
+                editor.apply();
                 Intent intent = new Intent(GuideActivity.this, RegistTeaActivity.class);
                 startActivity(intent);
             }

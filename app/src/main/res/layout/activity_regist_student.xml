@@ -11,10 +11,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="注   册Stu"
+            android:text="注册Student"
             android:textSize="20sp"
             android:id="@+id/textView10"
-            android:layout_gravity="center" />
+            android:layout_gravity="left|center_vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="跳过"
+            android:id="@+id/tv_reg_stu_jump"
+            android:layout_gravity="right|center_vertical" />
     </FrameLayout>
 
     <LinearLayout
@@ -41,6 +49,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/et_reg_stu_name"
                 android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_stu_cname" />
         </LinearLayout>
 
         <LinearLayout
@@ -63,6 +77,12 @@
                 android:id="@+id/et_reg_stu_class" />
 
             <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_stu_cclass" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="学号"
@@ -74,15 +94,16 @@
                 android:inputType="number"
                 android:ems="10"
                 android:id="@+id/et_reg_stu_id"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textColorHint="@color/dim_foreground_holo_dark"
+                android:hint="    *important"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="25dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="*"
-                android:textColor="#808080"
-                android:id="@+id/textView17" />
+                android:id="@+id/tv_reg_stu_cid" />
+
         </LinearLayout>
 
         <RelativeLayout
@@ -128,7 +149,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设置账号"
+                android:text="用户名"
                 android:id="@+id/textView15" />
 
             <EditText
@@ -136,8 +157,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:ems="10"
-                android:id="@+id/et_reg_stu_phone"
+                android:id="@+id/et_reg_stu_user"
                 android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_stu_cuser" />
 
         </LinearLayout>
 
@@ -161,6 +188,12 @@
                 android:id="@+id/et_reg_stu_pass1"
                 android:layout_weight="1" />
 
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_stu_cpass1" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -182,6 +215,12 @@
                 android:ems="10"
                 android:id="@+id/et_reg_stu_pass2"
                 android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_stu_cpass2" />
 
         </LinearLayout>
 

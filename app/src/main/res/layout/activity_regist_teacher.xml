@@ -6,15 +6,24 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_gravity="center_horizontal|top">
+        android:layout_gravity="center_horizontal|top"
+        android:background="@color/group_button_dialog_pressed_holo_dark">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="注   册Tea"
+            android:text="注册Teacher"
             android:textSize="20sp"
             android:id="@+id/textView4"
-            android:layout_gravity="center" />
+            android:layout_gravity="left|center_vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="跳过"
+            android:id="@+id/tv_reg_tea_jump"
+            android:layout_gravity="right|center_vertical" />
     </FrameLayout>
 
     <LinearLayout
@@ -33,26 +42,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="姓名"
-                android:id="@+id/textView5" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/et_reg_tea_name"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="设置账号"
+                android:text="用户名"
                 android:id="@+id/textView6" />
 
             <EditText
@@ -60,8 +50,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:ems="10"
-                android:id="@+id/et_reg_tea_phon"
+                android:id="@+id/et_reg_tea_user"
                 android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_tea_checkuser" />
 
         </LinearLayout>
 
@@ -85,6 +81,12 @@
                 android:id="@+id/et_reg_tea_pass1"
                 android:layout_weight="1" />
 
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_tea_checkpass1" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -106,6 +108,12 @@
                 android:ems="10"
                 android:id="@+id/et_reg_tea_pass2"
                 android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_reg_tea_checkpass2" />
         </LinearLayout>
 
         <LinearLayout
