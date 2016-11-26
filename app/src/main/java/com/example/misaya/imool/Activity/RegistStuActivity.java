@@ -168,7 +168,7 @@ public class RegistStuActivity extends Activity{
                             gender,
                             user.getText().toString(),
                             pass_1.getText().toString());
-                    HttpUtil httpUtil = new HttpUtil("", JsonUtil.ObjectToJson(sInfo)); //servlet name
+                    HttpUtil httpUtil = new HttpUtil("studentRegServ", JsonUtil.ObjectToJson(sInfo)); //servlet name
                     httpUtil.start();
 
                     try {

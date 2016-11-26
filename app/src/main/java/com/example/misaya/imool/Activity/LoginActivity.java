@@ -9,7 +9,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.misaya.imool.DAO.LoginInfo;
 import com.example.misaya.imool.R;
+import com.example.misaya.imool.Tool.HttpUtil;
+import com.example.misaya.imool.Tool.JsonUtil;
 
 public class LoginActivity extends Activity{
     private EditText user,pass;
@@ -44,9 +47,9 @@ public class LoginActivity extends Activity{
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                    登入操作
-                 */
+                LoginInfo login = new LoginInfo(user.getText().toString(),pass.getText().toString());
+                HttpUtil httpUtil = new HttpUtil("loginServ", JsonUtil.ObjectToJson(login));
+                httpUtil.start();
             }
         });
     }

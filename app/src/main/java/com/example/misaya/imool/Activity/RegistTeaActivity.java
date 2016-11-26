@@ -89,7 +89,7 @@ public class RegistTeaActivity extends Activity{
                     editor.apply();
 
                     RegistTeacherInfo tInfo = new RegistTeacherInfo(user.getText().toString(),pass_1.getText().toString());
-                    HttpUtil httpUtil = new HttpUtil("", JsonUtil.ObjectToJson(tInfo));     //servlet name
+                    HttpUtil httpUtil = new HttpUtil("teacherRegServ", JsonUtil.ObjectToJson(tInfo));     //servlet name
                     httpUtil.start();
                     try {
                         httpUtil.join();

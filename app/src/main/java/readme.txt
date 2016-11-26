@@ -10,4 +10,8 @@ SharedPreferences:
     TEACHER_INFO ->
     STUDENT_INFO ->
 
-    账号密码 SQLite
+    ※未改：
+    1.账号密码 SQLite 存在本地不安全
+    2.登入中的记住密码
+    3.登入中的无法登入
+    4.密码加密
