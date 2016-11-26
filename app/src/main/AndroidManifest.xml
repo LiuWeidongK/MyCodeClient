@@ -25,6 +25,7 @@
         <activity android:name=".Activity.RegistStuActivity"></activity>
         <activity android:name=".Activity.RegistTeaActivity"></activity>
         <activity android:name=".Activity.GuideActivity"></activity>
+        <activity android:name=".Activity.LoginActivity"></activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>

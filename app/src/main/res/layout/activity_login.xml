@@ -6,12 +6,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_gravity="center_horizontal|top">
+        android:layout_gravity="center_horizontal|top"
+        android:background="@color/group_button_dialog_pressed_holo_dark">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="登   录"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="注册"
+            android:id="@+id/tv_log_regist"
+            android:layout_gravity="right|center_vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="登录"
             android:textSize="20sp"
             android:id="@+id/textView21"
             android:layout_gravity="center" />
@@ -33,13 +42,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="账        号"
+                android:text="用户名"
                 android:id="@+id/textView22" />
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText8"
+                android:id="@+id/et_log_user"
                 android:layout_weight="1" />
         </LinearLayout>
 
@@ -47,20 +56,35 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" >
+            android:layout_gravity="center_horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="密        码"
+                android:text="密码"
                 android:id="@+id/textView23" />
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText9"
+                android:id="@+id/et_log_pass"
                 android:layout_weight="1" />
         </LinearLayout>
+
+        <FrameLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="记住密码"
+                android:id="@+id/cb_log_remeberpass"
+                android:checked="false"
+                android:layout_gravity="right|center_vertical" />
+        </FrameLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -72,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="登录"
-                android:id="@+id/button" />
+                android:id="@+id/btn_log_login" />
         </LinearLayout>
 
         <FrameLayout
@@ -85,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="无法登录？"
-                android:id="@+id/textView20"
+                android:id="@+id/tv_log_cantlogin"
                 android:layout_gravity="center" />
         </FrameLayout>
     </LinearLayout>

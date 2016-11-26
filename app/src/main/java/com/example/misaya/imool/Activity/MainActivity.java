@@ -42,26 +42,31 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SharedPreferences preferences = getSharedPreferences("USER_TYPE",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("IS_REGIST",false);
+        editor.apply();
+
+        isGuide();
+
         mFragmentManager = getSupportFragmentManager();
         setContentView(R.layout.activity_main);
         initFragmetList();
         mViewPagerFragmentAdapter = new ViewPagerFragmentAdapter(mFragmentManager,mFragmentList);
         initView();
         initViewPager();
-
-        isGuide();
     }
 
     private void isGuide(){
         SharedPreferences preferences = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
-        int count = preferences.getInt("count", 0);
+        int count = preferences.getInt("COUNTS", 0);
         if(count == 0){
             Intent intent = new Intent(MainActivity.this, GuideActivity.class);
             startActivity(intent);
             this.finish();
         }
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("count", ++count);
+        editor.putInt("COUNTS", ++count);
         editor.apply();
     }
 
@@ -142,7 +147,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private void cleanPreferences() {
         SharedPreferences preferences_1 = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
-        SharedPreferences preferences_2 = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
+        SharedPreferences preferences_2 = getSharedPreferences("USER_INFO", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor_1 = preferences_1.edit();
         editor_1.clear();
         editor_1.apply();

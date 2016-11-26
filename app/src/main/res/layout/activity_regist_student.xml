@@ -6,7 +6,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_gravity="center_horizontal|top">
+        android:layout_gravity="center_horizontal|top"
+        android:background="@color/group_button_dialog_pressed_holo_dark">
 
         <TextView
             android:layout_width="wrap_content"
@@ -96,7 +97,7 @@
                 android:id="@+id/et_reg_stu_id"
                 android:layout_weight="1"
                 android:textColorHint="@color/dim_foreground_holo_dark"
-                android:hint="    *important"/>
+                android:hint="*important"/>
 
             <TextView
                 android:layout_width="25dp"
@@ -106,39 +107,45 @@
 
         </LinearLayout>
 
-        <RelativeLayout
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/radiogroup"
             android:layout_gravity="center_horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="性别"
-                android:id="@+id/textView13"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true" />
+                android:id="@+id/textView5"
+                android:layout_gravity="center_vertical" />
 
-            <RadioButton
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="男"
-                android:id="@+id/rb_reg_stu_sex_female"
-                android:checked="true"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/textView13"
-                android:layout_marginStart="67dp" />
+                android:layout_marginLeft="80dp"
+                android:layout_gravity="center">
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="女"
-                android:id="@+id/rb_reg_stu_sex_male"
-                android:checked="false"
-                android:layout_marginStart="32dp"
-                android:layout_alignTop="@+id/textView13"
-                android:layout_toEndOf="@+id/rb_reg_stu_sex_female" />
-        </RelativeLayout>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="男"
+                    android:id="@+id/rb_reg_stu_male"
+                    android:layout_gravity="center"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="女"
+                    android:id="@+id/rb_reg_stu_female"
+                    android:checked="false"
+                    android:layout_marginLeft="50dp" />
+            </LinearLayout>
+
+        </RadioGroup>
 
         <LinearLayout
             android:orientation="horizontal"
