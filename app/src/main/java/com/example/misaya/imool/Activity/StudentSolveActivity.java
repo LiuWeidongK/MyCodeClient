@@ -121,16 +121,23 @@ public class StudentSolveActivity extends Activity {
 
         Log.i("@@httpGetResponse@@", httpUtil.getResponse());
 
-        if(httpUtil.getResponse().equals("TRUE")){
-            Toast.makeText(getApplicationContext(), "Successful!", Toast.LENGTH_LONG).show();
-            BlueToothOff();
-            finish();
-        } else if (httpUtil.getResponse().equals("FALSE")){
-            showAlert("Fail to search!");                    //匹配失败 询问是否重新
-        } else if(httpUtil.getResponse().equals("TIME_OUT")){
-            showAlert("Network connections error!");
-        } else if(httpUtil.getResponse().equals("SERVER_ERROR")){
-            showAlert("Server error!");
+        switch (httpUtil.getResponse()) {
+            case "TRUE":
+                Toast.makeText(getApplicationContext(), "Successful!", Toast.LENGTH_LONG).show();
+                BlueToothOff();
+                finish();
+                break;
+            case "FALSE":
+                showAlert("Fail to search!");                    //匹配失败 询问是否重新
+                break;
+            case "TIME_OUT":
+                showAlert("Network connections error!");
+                break;
+            case "SERVER_ERROR":
+                showAlert("Server error!");
+                break;
+            default:
+                break;
         }
     }
 

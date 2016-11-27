@@ -28,6 +28,7 @@ public class GuideActivity extends Activity {
                 editor.apply();
                 Intent intent = new Intent(GuideActivity.this, RegistStuActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -40,6 +41,7 @@ public class GuideActivity extends Activity {
                 editor.apply();
                 Intent intent = new Intent(GuideActivity.this, RegistTeaActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

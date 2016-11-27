@@ -68,7 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/et_log_pass"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:password="true" />
         </LinearLayout>
 
         <FrameLayout

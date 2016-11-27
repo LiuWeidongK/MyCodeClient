@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.misaya.imool.DAO.RegistTeacherInfo;
 import com.example.misaya.imool.R;
@@ -97,8 +98,11 @@ public class RegistTeaActivity extends Activity{
                         e.printStackTrace();
                     }
 
+                    Toast.makeText(getApplication(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
+
                     Intent intent = new Intent(RegistTeaActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     registAlert();
                 }
@@ -110,6 +114,7 @@ public class RegistTeaActivity extends Activity{
             public void onClick(View v) {
                 Intent intent = new Intent(RegistTeaActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -144,6 +149,7 @@ public class RegistTeaActivity extends Activity{
                 Intent intent = new Intent(RegistTeaActivity.this, MainActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
+                finish();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

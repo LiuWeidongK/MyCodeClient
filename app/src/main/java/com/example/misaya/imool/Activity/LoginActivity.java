@@ -1,13 +1,16 @@
 package com.example.misaya.imool.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.misaya.imool.DAO.LoginInfo;
 import com.example.misaya.imool.R;
@@ -17,7 +20,7 @@ import com.example.misaya.imool.Tool.JsonUtil;
 public class LoginActivity extends Activity{
     private EditText user,pass;
     private TextView regist,error_login;
-    private CheckBox remeberpass;
+    private CheckBox remeberpass;       //记住密码操作
     private Button login;
 
     @Override
@@ -32,6 +35,7 @@ public class LoginActivity extends Activity{
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, GuideActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -47,9 +51,40 @@ public class LoginActivity extends Activity{
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginInfo login = new LoginInfo(user.getText().toString(),pass.getText().toString());
+                if(user.getText().toString().equals("")||pass.getText().toString().equals("")){
+                    Toast.makeText(getApplication(),"用户名或密码为空",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                SharedPreferences preferences = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
+                String type = preferences.getString("TYPE","");
+                LoginInfo login = new LoginInfo(user.getText().toString(),pass.getText().toString(),type);
                 HttpUtil httpUtil = new HttpUtil("loginServ", JsonUtil.ObjectToJson(login));
                 httpUtil.start();
+                try {
+                    httpUtil.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                switch (httpUtil.getResponse()) {
+                    case "TRUE":
+                        Toast.makeText(getApplication(),"Login successful!",Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case "FALSE":
+                        Toast.makeText(getApplication(),"Login failure!",Toast.LENGTH_LONG).show();
+                        break;
+                    case "TIME_OUT":
+                        Toast.makeText(getApplication(),"Time out!",Toast.LENGTH_LONG).show();
+                        break;
+                    case "SERVER_ERROR":
+                        Toast.makeText(getApplication(),"Server error!",Toast.LENGTH_LONG).show();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
     }

@@ -42,10 +42,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences preferences = getSharedPreferences("USER_TYPE",Context.MODE_PRIVATE);
+        /*SharedPreferences preferences = getSharedPreferences("USER_TYPE",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("IS_REGIST",false);
-        editor.apply();
+        editor.apply();*/               //Error
 
         isGuide();
 

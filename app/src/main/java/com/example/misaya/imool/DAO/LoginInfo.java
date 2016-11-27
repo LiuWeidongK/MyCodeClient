@@ -1,11 +1,14 @@
 package com.example.misaya.imool.DAO;
 
 public class LoginInfo {
-    private String username,password;
+    private String username;
+    private String password;
+    private String type;
 
-    public LoginInfo(String username, String password) {
+    public LoginInfo(String username, String password, String type) {
         this.username = username;
         this.password = password;
+        this.type = type;
     }
 
     public String getUsername() {
@@ -23,4 +26,13 @@ public class LoginInfo {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
 }

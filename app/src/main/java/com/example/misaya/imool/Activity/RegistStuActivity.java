@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.misaya.imool.DAO.RegistStudentInfo;
 import com.example.misaya.imool.R;
@@ -55,7 +56,7 @@ public class RegistStuActivity extends Activity{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    if(checkUtil.checkName(_class.getText().toString())) {
+                    if(checkUtil.checkClass(_class.getText().toString())) {
                         setTextTrue(c_class);
                     } else {
                         setTextFalse(c_class);
@@ -68,7 +69,7 @@ public class RegistStuActivity extends Activity{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    if(checkUtil.checkName(id.getText().toString())) {
+                    if(checkUtil.checkId(id.getText().toString())) {
                         setTextTrue(c_id);
                     } else {
                         setTextFalse(c_id);
@@ -137,6 +138,7 @@ public class RegistStuActivity extends Activity{
             public void onClick(View v) {
                 Intent intent = new Intent(RegistStuActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -177,8 +179,11 @@ public class RegistStuActivity extends Activity{
                         e.printStackTrace();
                     }
 
+                    Toast.makeText(getApplication(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
+
                     Intent intent = new Intent(RegistStuActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     registAlert();
                 }
@@ -221,6 +226,7 @@ public class RegistStuActivity extends Activity{
                 Intent intent = new Intent(RegistStuActivity.this, MainActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
+                finish();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

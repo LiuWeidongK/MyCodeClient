@@ -36,7 +36,7 @@ public class CheckUtil {
         确认密码
      */
     public Boolean checkAgainPass(String pass_1,String pass_2) {
-        if(pass_1.equals(pass_2))
+        if(pass_1.equals(pass_2)&&!pass_1.equals("")&&!pass_2.equals(""))
             return true;
         return false;
     }

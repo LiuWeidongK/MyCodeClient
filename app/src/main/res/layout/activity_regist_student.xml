@@ -107,12 +107,12 @@
 
         </LinearLayout>
 
-        <RadioGroup
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/radiogroup"
             android:layout_gravity="center_horizontal">
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -121,19 +121,18 @@
                 android:id="@+id/textView5"
                 android:layout_gravity="center_vertical" />
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
-                android:layout_gravity="center">
+                android:orientation="horizontal"
+                android:id="@+id/radiogroup"
+                android:layout_marginLeft="50dp">
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="男"
                     android:id="@+id/rb_reg_stu_male"
-                    android:layout_gravity="center"
                     android:checked="true" />
 
                 <RadioButton
@@ -143,10 +142,8 @@
                     android:id="@+id/rb_reg_stu_female"
                     android:checked="false"
                     android:layout_marginLeft="50dp" />
-            </LinearLayout>
-
-        </RadioGroup>
-
+            </RadioGroup>
+        </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
