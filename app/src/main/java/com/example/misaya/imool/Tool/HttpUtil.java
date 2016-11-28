@@ -1,5 +1,7 @@
 package com.example.misaya.imool.Tool;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,7 +22,7 @@ public class HttpUtil extends Thread{
     public void run() {
         HttpURLConnection connection = null;
         try{
-            URL url = new URL("http://192.168.23.3:8080/" + servletName);
+            URL url = new URL("http://192.168.23.2:8080/" + servletName);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(5000);
@@ -30,6 +32,7 @@ public class HttpUtil extends Thread{
             OutputStream outputStream = connection.getOutputStream();
 
             String content = jsonStr;
+            Log.i("2.",content);
             outputStream.write(content.getBytes());
 
             StringBuilder stringBuilder = new StringBuilder();

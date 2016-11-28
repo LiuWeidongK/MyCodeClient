@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +28,7 @@ public class RegistStuActivity extends Activity{
     private TextView jump,toLogin;
     private TextView c_name,c_class,c_id,c_user,c_pass1,c_pass2;
     private RadioGroup radioGroup;
-    private String gender;
+    private String gender = "male";
     private Button regist;
 
     @Override
@@ -170,6 +171,7 @@ public class RegistStuActivity extends Activity{
                             gender,
                             user.getText().toString(),
                             pass_1.getText().toString());
+                    Log.i("jsonStr", JsonUtil.ObjectToJson(sInfo));
                     HttpUtil httpUtil = new HttpUtil("studentRegServ", JsonUtil.ObjectToJson(sInfo)); //servlet name
                     httpUtil.start();
 
@@ -179,11 +181,25 @@ public class RegistStuActivity extends Activity{
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(getApplication(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(RegistStuActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    switch (httpUtil.getResponse()) {
+                        case "TRUE":
+                            Toast.makeText(getApplication(),"Regist successful!",Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(RegistStuActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        case "FALSE":
+                            Toast.makeText(getApplication(),"Regist failure!",Toast.LENGTH_LONG).show();
+                            break;
+                        case "TIME_OUT":
+                            Toast.makeText(getApplication(),"Time out!",Toast.LENGTH_LONG).show();
+                            break;
+                        case "SERVER_ERROR":
+                            Toast.makeText(getApplication(),"Server error!",Toast.LENGTH_LONG).show();
+                            break;
+                        default:
+                            break;
+                    }
                 } else {
                     registAlert();
                 }

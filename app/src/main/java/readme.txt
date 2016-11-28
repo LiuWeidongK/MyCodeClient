@@ -6,7 +6,7 @@
 
 SharedPreferences:
     USE_COUNTS -> COUNT 登入次数 用于判断是否为初次登入
-    USER_TYPE -> 用户类型(TYPE)[STUDENT/TEACHER] 是否注册(IS_REGIST)->此处未实现->Mine页面
+    USER_TYPE -> 用户类型(TYPE)[STUDENT/TEACHER] 是注册(IS_REG否IST)->此处未实现->Mine页面
     TEACHER_INFO ->
     STUDENT_INFO ->
 

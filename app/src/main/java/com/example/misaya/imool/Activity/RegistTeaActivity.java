@@ -98,11 +98,25 @@ public class RegistTeaActivity extends Activity{
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(getApplication(),httpUtil.getResponse(),Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(RegistTeaActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    switch (httpUtil.getResponse()) {
+                        case "TRUE":
+                            Toast.makeText(getApplication(),"Regist successful!",Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(RegistTeaActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        case "FALSE":
+                            Toast.makeText(getApplication(),"Regist failure!",Toast.LENGTH_LONG).show();
+                            break;
+                        case "TIME_OUT":
+                            Toast.makeText(getApplication(),"Time out!",Toast.LENGTH_LONG).show();
+                            break;
+                        case "SERVER_ERROR":
+                            Toast.makeText(getApplication(),"Server error!",Toast.LENGTH_LONG).show();
+                            break;
+                        default:
+                            break;
+                    }
                 } else {
                     registAlert();
                 }
