@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,12 @@ public class LoginActivity extends Activity{
         setContentView(R.layout.activity_login);
 
         this.init();
+        SharedPreferences preferences = getSharedPreferences("REMEMBER", Context.MODE_PRIVATE);
+        if(preferences.getBoolean("ISCHECKED", false)) {
+            remeberpass.setChecked(true);
+            user.setText(preferences.getString("USERNAME", ""));
+            pass.setText(preferences.getString("PASSWORD", ""));
+        }
 
         regist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +54,16 @@ public class LoginActivity extends Activity{
                  */
             }
         });
+
+        /*remeberpass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(remeberpass.isChecked())
+                    preferences.edit().putBoolean("ISCHECKED",true).apply();
+                else
+                    preferences.edit().putBoolean("ISCHECKED",false).apply();
+            }
+        });*/
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,8 +84,15 @@ public class LoginActivity extends Activity{
                 }
 
                 switch (httpUtil.getResponse()) {
-                    case "TRUE":
+                    case "TRUE":                                    //登入成功
                         Toast.makeText(getApplication(),"Login successful!",Toast.LENGTH_LONG).show();
+                        if(remeberpass.isChecked()) {
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("USERNAME",user.getText().toString());
+                            editor.putString("PASSWORD",pass.getText().toString());
+                            editor.putBoolean("ISCHECKED",remeberpass.isChecked());
+                            editor.apply();
+                        }
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();

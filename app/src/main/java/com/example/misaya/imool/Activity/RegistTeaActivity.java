@@ -19,6 +19,7 @@ import com.example.misaya.imool.R;
 import com.example.misaya.imool.Tool.CheckUtil;
 import com.example.misaya.imool.Tool.HttpUtil;
 import com.example.misaya.imool.Tool.JsonUtil;
+import com.example.misaya.imool.Tool.MD5Util;
 
 public class RegistTeaActivity extends Activity{
     private EditText user,pass_1,pass_2;
@@ -86,10 +87,10 @@ public class RegistTeaActivity extends Activity{
                     SharedPreferences preferences = getSharedPreferences("TEACHER_INFO", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("USERNAME", user.getText().toString());
-                    editor.putString("PASSWORD", pass_1.getText().toString());
+                    //editor.putString("PASSWORD", pass_1.getText().toString());
                     editor.apply();
 
-                    RegistTeacherInfo tInfo = new RegistTeacherInfo(user.getText().toString(),pass_1.getText().toString());
+                    RegistTeacherInfo tInfo = new RegistTeacherInfo(user.getText().toString(), MD5Util.getMD5(pass_1.getText().toString()));
                     HttpUtil httpUtil = new HttpUtil("teacherRegServ", JsonUtil.ObjectToJson(tInfo));     //servlet name
                     httpUtil.start();
                     try {

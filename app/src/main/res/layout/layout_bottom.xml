@@ -5,7 +5,8 @@
     android:layout_alignParentBottom="true"
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
-    android:background="@color/group_button_dialog_pressed_holo_dark">
+    android:background="@color/group_button_dialog_pressed_holo_dark"
+    android:baselineAligned="false">
 
     <LinearLayout
         android:id="@+id/firstLinearLayout"
@@ -16,7 +17,7 @@
         android:layout_weight="1">
         <ImageView
             android:id="@+id/firstImageView"
-            android:background="@drawable/home"
+            android:background="@drawable/noname"
             android:layout_width="30dp"
             android:layout_height="30dp" />
         <TextView
@@ -36,7 +37,7 @@
             android:id="@+id/secondImageView"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/discovery"/>
+            android:background="@drawable/noname"/>
         <TextView
             android:id="@+id/secondTextView"
             android:layout_width="wrap_content"
@@ -69,7 +70,7 @@
             android:id="@+id/thirdImageView"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/message"/>
+            android:background="@drawable/message_2"/>
         <TextView
             android:id="@+id/thirdTextView"
             android:layout_width="wrap_content"

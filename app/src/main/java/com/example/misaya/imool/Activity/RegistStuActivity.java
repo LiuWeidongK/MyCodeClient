@@ -22,6 +22,7 @@ import com.example.misaya.imool.R;
 import com.example.misaya.imool.Tool.CheckUtil;
 import com.example.misaya.imool.Tool.HttpUtil;
 import com.example.misaya.imool.Tool.JsonUtil;
+import com.example.misaya.imool.Tool.MD5Util;
 
 public class RegistStuActivity extends Activity{
     private EditText name,_class,id,user,pass_1,pass_2;
@@ -170,8 +171,8 @@ public class RegistStuActivity extends Activity{
                             id.getText().toString(),
                             gender,
                             user.getText().toString(),
-                            pass_1.getText().toString());
-                    Log.i("jsonStr", JsonUtil.ObjectToJson(sInfo));
+                            MD5Util.getMD5(pass_1.getText().toString()));
+
                     HttpUtil httpUtil = new HttpUtil("studentRegServ", JsonUtil.ObjectToJson(sInfo)); //servlet name
                     httpUtil.start();
 
@@ -215,7 +216,7 @@ public class RegistStuActivity extends Activity{
         editor.putString("ID", id.getText().toString());
         editor.putString("GENDER", gender);
         editor.putString("USERNAME",user.getText().toString());
-        editor.putString("PASSWORD", pass_1.getText().toString());
+        //editor.putString("PASSWORD", pass_1.getText().toString());
         editor.apply();
     }
 

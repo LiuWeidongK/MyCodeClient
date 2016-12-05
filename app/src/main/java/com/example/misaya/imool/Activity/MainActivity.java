@@ -1,6 +1,8 @@
 package com.example.misaya.imool.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
     TextView titleTextView;
+    private String userType;
     public LinearLayout firstLinearLayout;
     public LinearLayout secondLinearLayout;
     public LinearLayout middleLinearLayout;
@@ -42,13 +46,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*SharedPreferences preferences = getSharedPreferences("USER_TYPE",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("IS_REGIST",false);
-        editor.apply();*/               //Error
-
-        isGuide();
-
+        this.isGuide();
+        SharedPreferences preferences = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
+        userType = preferences.getString("TYPE", "NULL");
         mFragmentManager = getSupportFragmentManager();
         setContentView(R.layout.activity_main);
         initFragmetList();
@@ -58,14 +58,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void isGuide(){
-        SharedPreferences preferences = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
-        int count = preferences.getInt("COUNTS", 0);
-        if(count == 0){
+        SharedPreferences preferences_1 = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
+        SharedPreferences preferences_2 = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
+        int count = preferences_1.getInt("COUNTS", 0);
+        String type = preferences_2.getString("TYPE", "NULL");
+        if(count == 0 || type.equals("NULL")){                  //防止首次进入之后退出
             Intent intent = new Intent(MainActivity.this, GuideActivity.class);
             startActivity(intent);
             this.finish();
         }
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = preferences_1.edit();
         editor.putInt("COUNTS", ++count);
         editor.apply();
     }
@@ -76,16 +78,38 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public void initViewPager() {
-        mViewPager.addOnPageChangeListener(new ViewPagetOnPagerChangedLisenter());
+        mViewPager.addOnPageChangeListener(new ViewPageOnPagerChangedListener());
         mViewPager.setAdapter(mViewPagerFragmentAdapter);
-        mViewPager.setCurrentItem(0);
-        titleTextView.setText(titleName[0]);
-        updateBottomLinearLayoutSelect(true, false, false, false);
+        switch (userType) {
+            case "TEACHER":
+                mViewPager.setCurrentItem(0);
+                titleTextView.setText(titleName[0]);
+                updateBottomLinearLayoutSelect(true, false, false, false);
+                break;
+            case "STUDENT":
+                mViewPager.setCurrentItem(1);
+                titleTextView.setText(titleName[1]);
+                updateBottomLinearLayoutSelect(false, true, false, false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void Alert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("You have no permission!");
+        builder.setTitle("Prompt");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     public void initFragmetList() {
-        /*SharedPreferences preferences = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
-        String type = preferences.getString("TYPE","");*/
         Fragment teacher = new TeacherFragment();
         Fragment student = new StudentFragment();
         Fragment message = new MessageFragment();
@@ -115,12 +139,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.firstLinearLayout:
-                mViewPager.setCurrentItem(0);
-                updateBottomLinearLayoutSelect(true,false,false,false);
+                if(userType.equals("TEACHER")) {
+                    mViewPager.setCurrentItem(0);
+                    updateBottomLinearLayoutSelect(true,false,false,false);
+                } else {
+                    Alert();
+                }
                 break;
             case R.id.secondLinearLayout:
-                mViewPager.setCurrentItem(1);
-                updateBottomLinearLayoutSelect(false,true,false,false);
+                if(userType.equals("STUDENT")) {
+                    mViewPager.setCurrentItem(1);
+                    updateBottomLinearLayoutSelect(false,true,false,false);
+                } else {
+                    Alert();
+                }
                 break;
             case R.id.midLinearLayout:
                 this.cleanPreferences();
@@ -147,7 +179,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private void cleanPreferences() {
         SharedPreferences preferences_1 = getSharedPreferences("USE_COUNTS", Context.MODE_PRIVATE);
-        SharedPreferences preferences_2 = getSharedPreferences("USER_INFO", Context.MODE_PRIVATE);
+        SharedPreferences preferences_2 = getSharedPreferences("USER_TYPE", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor_1 = preferences_1.edit();
         editor_1.clear();
         editor_1.apply();
@@ -157,7 +189,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Toast.makeText(getApplicationContext(),"Preferences have been cleaned already!",Toast.LENGTH_LONG).show();
     }
 
-    class ViewPagetOnPagerChangedLisenter implements ViewPager.OnPageChangeListener {
+    class ViewPageOnPagerChangedListener implements ViewPager.OnPageChangeListener {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             //Log.d(TAG, "onPageScrooled");
