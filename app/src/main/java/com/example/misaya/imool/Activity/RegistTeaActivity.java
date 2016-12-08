@@ -81,14 +81,6 @@ public class RegistTeaActivity extends Activity{
                 if (checkUtil.checkUser(user.getText().toString())
                         && checkUtil.checkPass(pass_1.getText().toString())
                         && checkUtil.checkAgainPass(pass_1.getText().toString(), pass_2.getText().toString())) {
-                    /*
-                        注册成功 ※ 还需要添加本地事件 以及数据库信息
-                     */
-                    SharedPreferences preferences = getSharedPreferences("TEACHER_INFO", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("USERNAME", user.getText().toString());
-                    //editor.putString("PASSWORD", pass_1.getText().toString());
-                    editor.apply();
 
                     RegistTeacherInfo tInfo = new RegistTeacherInfo(user.getText().toString(), MD5Util.getMD5(pass_1.getText().toString()));
                     HttpUtil httpUtil = new HttpUtil("teacherRegServ", JsonUtil.ObjectToJson(tInfo));     //servlet name
@@ -102,6 +94,7 @@ public class RegistTeaActivity extends Activity{
                     switch (httpUtil.getResponse()) {
                         case "TRUE":
                             Toast.makeText(getApplication(),"Regist successful!",Toast.LENGTH_LONG).show();
+                            addPreferences();
                             Intent intent = new Intent(RegistTeaActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -139,6 +132,15 @@ public class RegistTeaActivity extends Activity{
                 jumpAlert();
             }
         });
+    }
+
+    private void addPreferences(){
+        SharedPreferences preferences_ = getSharedPreferences("USER_TYPE",Context.MODE_PRIVATE);
+        preferences_.edit().putBoolean("IS_REGIST",true).apply();
+        SharedPreferences preferences = getSharedPreferences("TEACHER_INFO", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("USERNAME", user.getText().toString());
+        editor.apply();
     }
 
     private void registAlert(){

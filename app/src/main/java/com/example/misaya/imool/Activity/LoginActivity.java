@@ -23,18 +23,18 @@ public class LoginActivity extends Activity{
     private TextView regist,error_login;
     private CheckBox remeberpass;       //记住密码操作
     private Button login;
-
+    private SharedPreferences preferences_rem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         this.init();
-        SharedPreferences preferences = getSharedPreferences("REMEMBER", Context.MODE_PRIVATE);
-        if(preferences.getBoolean("ISCHECKED", false)) {
+        preferences_rem = getSharedPreferences("REMEMBER", Context.MODE_PRIVATE);
+        if(preferences_rem.getBoolean("ISCHECKED", false)) {
             remeberpass.setChecked(true);
-            user.setText(preferences.getString("USERNAME", ""));
-            pass.setText(preferences.getString("PASSWORD", ""));
+            user.setText(preferences_rem.getString("USERNAME", ""));
+            pass.setText(preferences_rem.getString("PASSWORD", ""));
         }
 
         regist.setOnClickListener(new View.OnClickListener() {
@@ -54,16 +54,6 @@ public class LoginActivity extends Activity{
                  */
             }
         });
-
-        /*remeberpass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(remeberpass.isChecked())
-                    preferences.edit().putBoolean("ISCHECKED",true).apply();
-                else
-                    preferences.edit().putBoolean("ISCHECKED",false).apply();
-            }
-        });*/
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,8 +76,9 @@ public class LoginActivity extends Activity{
                 switch (httpUtil.getResponse()) {
                     case "TRUE":                                    //登入成功
                         Toast.makeText(getApplication(),"Login successful!",Toast.LENGTH_LONG).show();
+                        preferences.edit().putBoolean("IS_LOGIN",true).apply();         //此处是两个不同的preferences
                         if(remeberpass.isChecked()) {
-                            SharedPreferences.Editor editor = preferences.edit();
+                            SharedPreferences.Editor editor = preferences_rem.edit();
                             editor.putString("USERNAME",user.getText().toString());
                             editor.putString("PASSWORD",pass.getText().toString());
                             editor.putBoolean("ISCHECKED",remeberpass.isChecked());

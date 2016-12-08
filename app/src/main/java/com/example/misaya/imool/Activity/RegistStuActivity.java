@@ -160,10 +160,6 @@ public class RegistStuActivity extends Activity{
                         && checkUtil.checkUser(user.getText().toString())
                         && checkUtil.checkPass(pass_1.getText().toString())
                         && checkUtil.checkAgainPass(pass_1.getText().toString(), pass_2.getText().toString())) {
-                    /*
-                        注册成功 ※ 还需要添加本地事件 以及数据库信息
-                     */
-                    addPreferences();
 
                     RegistStudentInfo sInfo = new RegistStudentInfo(
                             name.getText().toString(),
@@ -173,7 +169,7 @@ public class RegistStuActivity extends Activity{
                             user.getText().toString(),
                             MD5Util.getMD5(pass_1.getText().toString()));
 
-                    HttpUtil httpUtil = new HttpUtil("studentRegServ", JsonUtil.ObjectToJson(sInfo)); //servlet name
+                    HttpUtil httpUtil = new HttpUtil("studentRegServ", JsonUtil.ObjectToJson(sInfo));
                     httpUtil.start();
 
                     try {
@@ -185,6 +181,7 @@ public class RegistStuActivity extends Activity{
                     switch (httpUtil.getResponse()) {
                         case "TRUE":
                             Toast.makeText(getApplication(),"Regist successful!",Toast.LENGTH_LONG).show();
+                            addPreferences();
                             Intent intent = new Intent(RegistStuActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -209,6 +206,8 @@ public class RegistStuActivity extends Activity{
     }
 
     private void addPreferences(){
+        SharedPreferences preferences_ = getSharedPreferences("USER_TYPE",Context.MODE_PRIVATE);
+        preferences_.edit().putBoolean("IS_REGIST",true).apply();
         SharedPreferences preferences = getSharedPreferences("STUDENT_INFO", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("NAME", name.getText().toString());
@@ -216,7 +215,6 @@ public class RegistStuActivity extends Activity{
         editor.putString("ID", id.getText().toString());
         editor.putString("GENDER", gender);
         editor.putString("USERNAME",user.getText().toString());
-        //editor.putString("PASSWORD", pass_1.getText().toString());
         editor.apply();
     }
 
